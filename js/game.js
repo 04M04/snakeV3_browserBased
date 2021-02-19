@@ -402,6 +402,31 @@ const check_snakeFoodEaten = (snakes, food) => {
 
 const activate_effects = (snakes) => {
     //TODO: implement activate_effects function
+    snakes.map(snake => {
+        if(snake.alive){
+            for (let effect_index = 0; effect_index < snake.effects.length; effect_index++) {
+                let effect = snake.effects[effect_index];
+
+                if(effect.type == enum_foodType.SINGLE_GROWTH){
+                    snake.grow++;                
+                }
+                else if(effect.type == enum_foodType.DOUBLE_GROWTH){
+                    snake.grow += 2;                
+                }
+                else if(effect.type == enum_foodType.DOUBLE_SPEED){
+                    //NOT IMPLEMENTED
+                }
+                else if(effect.type == enum_foodType.POISON_BITE){
+                    //NOT IMPLEMENTED
+                }
+
+                effect.activeRounds--;
+                if(effect.activeRounds == 0){
+                    snake.effects.splice(effect_index, 1);
+                }
+            }
+        }
+    });
     return true;
 };
 
@@ -424,9 +449,8 @@ const game_loop = (snakes, food) => {
         drawFood(foodElement);
     });
 
-    //activate all collected effects 
-    //TODO: effect sichtbar machen -> eventuell an den user_name anhängen    
-    //TODO: activate_effects implementieren -> function vordefiniert
+    //activate all collected effects
+    activate_effects(snakes);
 
     //move snakes
     snakes.map(snake => {
@@ -442,7 +466,10 @@ const game_loop = (snakes, food) => {
 
     //check food eaten
     check_snakeFoodEaten(snakes, food);
-    
+
+    if(food.length < 1){
+        food.push(create_foodElement(snakes, food));
+    }
 
     // drawSnake(snake1);
     // move_snake(snake1);
