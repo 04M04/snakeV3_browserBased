@@ -236,9 +236,9 @@ const check_snakeOwnBodyCollision = (snake) => {
 
 const check_snakeSnakeCollision = (snake, snakes) => {
     let collisionHappened = false;
-    snakes.forEach(otherSnake => {
+    snakes.map(otherSnake => {
         if(otherSnake.user_name != snake.user_name){            
-            otherSnake.body.forEach(element => {
+            otherSnake.body.map(element => {
                 if(JSON.stringify(snake.body[0]) == JSON.stringify(element)){
                     snake.alive = false;                    
                     collisionHappened = true;
@@ -251,14 +251,14 @@ const check_snakeSnakeCollision = (snake, snakes) => {
 
 const check_snakeCollisions = (snakes) => {
     let collisionHappened = false;
-    snakes.forEach(snake => {
+    snakes.map(snake => {
         if(snake.alive){
             collisionHappened = check_snakeWallCollision(snake);
             collisionHappened = check_snakeOwnBodyCollision(snake);
             collisionHappened = check_snakeSnakeCollision(snake, snakes);
         }        
     });
-    // snakes.forEach(snake => {
+    // snakes.map(snake => {
     //     if(snake.alive){
     //         snake.body = [];
     //     }
@@ -363,7 +363,7 @@ const move_snake = (snake) => {
 const changeDirection = (keycode, snakes) => {
     keycode = keycode.toLowerCase();
 
-    snakes.forEach(snake => {
+    snakes.map(snake => {
         if (keycode == snake.controlls.left.toLowerCase()) { snake.direction = enum_directions.LEFT; }
         else if (keycode == snake.controlls.up.toLowerCase()) { snake.direction = enum_directions.UP; }
         else if (keycode == snake.controlls.right.toLowerCase()) { snake.direction = enum_directions.RIGHT; }
@@ -373,7 +373,7 @@ const changeDirection = (keycode, snakes) => {
 
 const check_snakeFoodEaten = (snakes, food) => {
     let foodEaten = false;
-    snakes.forEach(snake => {
+    snakes.map(snake => {
         for (let food_index = 0; food_index < food.length; food_index++) {
             if(JSON.stringify(snake.body[0]) == JSON.stringify(food[food_index].position)){                
                 if(food[food_index].type == enum_foodType.SINGLE_GROWTH){
@@ -413,14 +413,14 @@ const game_loop = (snakes, food) => {
     drawField();
 
     //draw snakes
-    snakes.forEach(snake => {
+    snakes.map(snake => {
         if(snake.alive){
             drawSnake(snake);
         }
     });
 
     //draw food
-    food.forEach(foodElement => {
+    food.map(foodElement => {
         drawFood(foodElement);
     });
 
@@ -429,7 +429,7 @@ const game_loop = (snakes, food) => {
     //TODO: activate_effects implementieren -> function vordefiniert
 
     //move snakes
-    snakes.forEach(snake => {
+    snakes.map(snake => {
         if(snake.alive){
             move_snake(snake);
         }
@@ -451,7 +451,7 @@ const game_loop = (snakes, food) => {
 const new_game = () => {    
     let snakes = [
         JSON.parse(JSON.stringify(default_snake)),
-        // JSON.parse(JSON.stringify(default_snake2)),
+        JSON.parse(JSON.stringify(default_snake2)),
         // JSON.parse(JSON.stringify(default_snake3))
     ];
     let food = [];
