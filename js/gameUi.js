@@ -65,7 +65,7 @@ const drawSnake = (snake) => {
 
 //WORKING
 const drawFood = (food) => {
-    drawSquare(food.x, food.y, food.color);
+    drawSquare(food.position.x, food.position.y, food.color);
 }
 
 //TESTDATA

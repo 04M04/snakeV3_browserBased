@@ -2,7 +2,7 @@ const fieldSize = 20;
 const fieldSize_x = fieldSize;
 const fieldSize_y = fieldSize;
 
-const enum_colors = {
+const enum_snakecolors = {
     ZERO: "#000000",
     RED: "#ff0000",
     BLUE: "#0000ff",
@@ -21,14 +21,23 @@ const enum_directions = {
     RIGHT: "RIGHT"
 };
 
-const enum_items = {
-    DOUBLE_SPEED: "DOUBLE_SPEED",
-    POISON_BITE: "POISON_BITE"
+const enum_foodColors = {    
+    GRAY: "#BDBDBD",        //enum_foodEffects.NORMAL_GROWTH
+    BLUE_GRAY: "#78909C",   //enum_foodEffects.DOUBLE_GROWTH
+    RED: "#EF5350",         //enum_foodEffects.DOUBLE_SPEED
+    DEEP_PURPLE: "#311B92"  //enum_foodEffects.POISON_BITE
+}
+
+const enum_foodType = {
+    SINGLE_GROWTH: "SINGLE_GROWTH", //enum_foodColors.GRAY
+    DOUBLE_GROWTH: "DOUBLE_GROWTH", //enum_foodColors.BLUE_GRAY
+    DOUBLE_SPEED: "DOUBLE_SPEED",   //enum_foodColors.RED
+    POISON_BITE: "POISON_BITE"      //enum_foodColors.DEEP_PURPLE
 };
 
 const default_snake = {
     user_name: "user_zero",
-    color: enum_colors.ZERO,
+    color: enum_snakecolors.ZERO,
     direction: null,
     last_direction: enum_directions.RIGHT,
     controlls: {
@@ -37,6 +46,7 @@ const default_snake = {
         left: "a",
         right: "d"
     },
+    effects: [],
     speed: 1,
     grow: 0,
     points: 1,
@@ -76,7 +86,7 @@ const default_snake = {
 
 const default_snake2 = {
     user_name: "user_red",
-    color: enum_colors.RED,
+    color: enum_snakecolors.RED,
     direction: null,
     last_direction: enum_directions.RIGHT,
     controlls: {
@@ -85,6 +95,7 @@ const default_snake2 = {
         left: "ArrowLeft",
         right: "ArrowRight"
     },
+    effects: [],
     speed: 1,
     grow: 0,
     points: 1,
@@ -124,7 +135,7 @@ const default_snake2 = {
 
 const default_snake3 = {
     user_name: "user_green",
-    color: enum_colors.GREEN,
+    color: enum_snakecolors.GREEN,
     direction: null,
     last_direction: enum_directions.UP,
     controlls: {
@@ -133,6 +144,7 @@ const default_snake3 = {
         left: "ArrowLeft",
         right: "ArrowRight"
     },
+    effects: [],
     speed: 1,
     grow: 0,
     points: 1,
@@ -163,10 +175,39 @@ const default_snake3 = {
 };
 
 const default_food = {
-    color: "#d86969",
-    x: 0,
-    y: 0
+    id: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    type: enum_foodType.SINGLE_GROWTH,
+    color: enum_foodColors.GRAY,
+    position: {
+        x: 0,
+        y: 0
+    }       
 };
+
+// const default_effect = {
+//     type: SINGLE_GROWTH,
+//     activeRounds: 1
+// }
+
+const effect_SINGLE_GROWTH = {
+    type: enum_foodType.SINGLE_GROWTH,
+    activeRounds: 1
+}
+
+const effect_DOUBLE_GROWTH = {
+    type: enum_foodType.DOUBLE_GROWTH,
+    activeRounds: 1
+}
+
+const effect_DOUBLE_SPEED = {
+    type: enum_foodType.DOUBLE_SPEED,
+    activeRounds: 4
+}
+
+const effect_POISON_BITE = {
+    type: enum_foodType.POISON_BITE,
+    activeRounds: 4
+}
 
 const check_snakeWallCollision = (snake) => {
     if (
@@ -225,6 +266,49 @@ const check_snakeCollisions = (snakes) => {
     return collisionHappened;
 };
 
+const create_foodElement = (snakes, food) => {    
+    let collisionHappened = true;
+    let newFoodPos = null;
+    let newFood = JSON.parse(JSON.stringify(default_food));
+
+    while(collisionHappened){
+        newFoodPos = {
+            x: Math.floor(Math.random() * fieldSize_x),
+            y: Math.floor(Math.random() * fieldSize_y)
+        };
+        collisionHappened = false;
+        //check for food snake collision
+        for(let snake_index = 0; snake_index < snakes.length; snake_index++){
+            for(let bodyElement_index = 0; bodyElement_index < snakes[snake_index].body.length; bodyElement_index++){
+                if(JSON.stringify(snakes[snake_index].body[bodyElement_index]) == JSON.stringify(newFoodPos)){
+                    collisionHappened = true;
+                }
+                if(collisionHappened){
+                    break;
+                }
+            }
+            if(collisionHappened){
+                break;
+            }
+        }
+        //check for food food collision
+        if(collisionHappened == false){
+            for (let food_index = 0; food_index < food.length; food_index++) {
+                if(JSON.stringify(food[food_index].position) == JSON.stringify(newFoodPos)){
+                    collisionHappened = true;
+                }
+                if(collisionHappened){
+                    break;
+                }
+            }
+        }
+    }
+
+    newFood.position = newFoodPos;
+    newFood.id = uuidv4();
+    return newFood;
+};
+
 const move_snake = (snake) => {
     if (snake.direction == null && snake.last_direction != null){
         snake.direction = snake.last_direction;
@@ -274,10 +358,6 @@ const move_snake = (snake) => {
     }
 
     console.log("moved");
-
-    // if (check_snakeWallCollision(snake)){
-    //     console.log("collision");
-    // }
 };
 
 const changeDirection = (keycode, snakes) => {
@@ -291,23 +371,77 @@ const changeDirection = (keycode, snakes) => {
     });
 };
 
-const game_loop = (snakes) => {    
+const check_snakeFoodEaten = (snakes, food) => {
+    let foodEaten = false;
+    snakes.forEach(snake => {
+        for (let food_index = 0; food_index < food.length; food_index++) {
+            if(JSON.stringify(snake.body[0]) == JSON.stringify(food[food_index].position)){                
+                if(food[food_index].type == enum_foodType.SINGLE_GROWTH){
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_SINGLE_GROWTH)));                    
+                }
+                else if(food[food_index].type == enum_foodType.DOUBLE_GROWTH){
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_DOUBLE_GROWTH)));                    
+                }
+                else if(food[food_index].type == enum_foodType.DOUBLE_SPEED){
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_DOUBLE_SPEED)));                    
+                }
+                else if(food[food_index].type == enum_foodType.POISON_BITE){
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_POISON_BITE)));                    
+                }
+                else{
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_SINGLE_GROWTH)));                    
+                    console.log(`food.type: ${food[food_index].type} -> NOT IMPLEMENTED: Fallback to SINGLE_GROWTH.`);
+                }
+                food.splice(food_index, 1);
+                foodEaten = true;
+            }
+        }
+    });
+    return foodEaten;
+};
+
+const activate_effects = (snakes) => {
+    //TODO: implement activate_effects function
+    return true;
+};
+
+const game_loop = (snakes, food) => {
+    //initialize canvas
     ctx.beginPath();
+
+    //draw field
     drawField();
+
+    //draw snakes
     snakes.forEach(snake => {
         if(snake.alive){
             drawSnake(snake);
-        }        
+        }
     });
+
+    //draw food
+    food.forEach(foodElement => {
+        drawFood(foodElement);
+    });
+
+    //activate all collected effects 
+    //TODO: effect sichtbar machen -> eventuell an den user_name anhängen    
+    //TODO: activate_effects implementieren -> function vordefiniert
+
+    //move snakes
     snakes.forEach(snake => {
         if(snake.alive){
             move_snake(snake);
-        }        
+        }
     });
     
+    //check snakes collisions
     if(check_snakeCollisions(snakes)){
         console.log("collision happend!")
     }
+
+    //check food eaten
+    check_snakeFoodEaten(snakes, food);
     
 
     // drawSnake(snake1);
@@ -320,6 +454,8 @@ const new_game = () => {
         // JSON.parse(JSON.stringify(default_snake2)),
         // JSON.parse(JSON.stringify(default_snake3))
     ];
+    let food = [];
+    food.push(create_foodElement(snakes, food));
 
     document.addEventListener('keydown', function (event) {
         console.log(`keyCode: ${event.key}`);
@@ -327,11 +463,13 @@ const new_game = () => {
     });
 
     // snake1 = JSON.parse(JSON.stringify(default_snake));
-    setInterval(function(){ game_loop(snakes); }, 200);
+    setInterval(function(){ game_loop(snakes, food); }, 200);
 };
 
 new_game();
 
-//TODO: add wall collision or an option for wall warping 
+//TODO: add wall collision or an option for wall warping
 //TODO: implement 2 snake
 //TODO: implement snake collision (also speed up snake)
+//TODO: usernames mit colors of snake anzeigen
+//TODO: ensure there is always one foodElement on field
