@@ -468,8 +468,12 @@ const new_game = () => {
 
 new_game();
 
-//TODO: add wall collision or an option for wall warping
-//TODO: implement 2 snake
-//TODO: implement snake collision (also speed up snake)
+//TODO: effect sichtbar machen -> eventuell an den user_name anhängen    
+//TODO: activate_effects implementieren -> function vordefiniert
+//TODO: rethink/rework how items work
+//TODO: implement missing effects like speed up snake
+
+
+//TODO: add an option for wall warping
 //TODO: usernames mit colors of snake anzeigen
 //TODO: ensure there is always one foodElement on field
