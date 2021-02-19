@@ -237,7 +237,7 @@ const check_snakeOwnBodyCollision = (snake) => {
 const check_snakeSnakeCollision = (snake, snakes) => {
     let collisionHappened = false;
     snakes.map(otherSnake => {
-        if(otherSnake.user_name != snake.user_name){            
+        if(otherSnake.user_name != snake.user_name && otherSnake.alive){            
             otherSnake.body.map(element => {
                 if(JSON.stringify(snake.body[0]) == JSON.stringify(element)){
                     snake.alive = false;                    
