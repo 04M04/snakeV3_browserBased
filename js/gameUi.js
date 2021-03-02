@@ -34,7 +34,7 @@ const drawField = () => {
 };
 
 //WORKING
-function drawSquare(x,y,color) {
+const drawSquare = (x,y,color) => {
     ctx.fillStyle = color;
     if (splitSnakePieces){
         ctx.fillRect(

@@ -21,7 +21,7 @@ const enum_directions = {
     RIGHT: "RIGHT"
 };
 
-const enum_foodColors = {    
+const enum_foodColors = {
     GRAY: "#BDBDBD",        //enum_foodEffects.NORMAL_GROWTH
     BLUE_GRAY: "#78909C",   //enum_foodEffects.DOUBLE_GROWTH
     RED: "#EF5350",         //enum_foodEffects.DOUBLE_SPEED
@@ -39,7 +39,6 @@ const default_snake = {
     user_name: "user_zero",
     color: enum_snakecolors.ZERO,
     direction: null,
-    last_direction: enum_directions.RIGHT,
     controlls: {
         up: "w",
         down: "s",
@@ -54,30 +53,37 @@ const default_snake = {
     items: [],
     body: [
         {
+            direction: enum_directions.RIGHT,
             x: 6,
             y: 0
         },
         {
+            direction: enum_directions.RIGHT,
             x: 5,
             y: 0
         },
         {
+            direction: enum_directions.RIGHT,
             x: 4,
             y: 0
         },
         {
+            direction: enum_directions.RIGHT,
             x: 3,
             y: 0
         },
         {
+            direction: enum_directions.RIGHT,
             x: 2,
             y: 0
         },
         {
+            direction: enum_directions.RIGHT,
             x: 1,
             y: 0
         },
         {
+            direction: enum_directions.RIGHT,
             x: 0,
             y: 0
         }
@@ -88,7 +94,6 @@ const default_snake2 = {
     user_name: "user_red",
     color: enum_snakecolors.RED,
     direction: null,
-    last_direction: enum_directions.RIGHT,
     controlls: {
         up: "ArrowUp",
         down: "ArrowDown",
@@ -103,30 +108,37 @@ const default_snake2 = {
     items: [],
     body: [
         {
+            direction: enum_directions.RIGHT,
             x: 6,
             y: 2
         },
         {
+            direction: enum_directions.RIGHT,
             x: 5,
             y: 2
         },
         {
+            direction: enum_directions.RIGHT,
             x: 4,
             y: 2
         },
         {
+            direction: enum_directions.RIGHT,
             x: 3,
             y: 2
         },
         {
+            direction: enum_directions.RIGHT,
             x: 2,
             y: 2
         },
         {
+            direction: enum_directions.RIGHT,
             x: 1,
             y: 2
         },
         {
+            direction: enum_directions.RIGHT,
             x: 0,
             y: 2
         }
@@ -137,7 +149,6 @@ const default_snake3 = {
     user_name: "user_green",
     color: enum_snakecolors.GREEN,
     direction: null,
-    last_direction: enum_directions.UP,
     controlls: {
         up: "ArrowUp",
         down: "ArrowDown",
@@ -152,22 +163,27 @@ const default_snake3 = {
     items: [],
     body: [
         {
+            direction: enum_directions.UP,
             x: 10,
             y: 6
         },
         {
+            direction: enum_directions.UP,
             x: 10,
             y: 7
         },
         {
+            direction: enum_directions.UP,
             x: 10,
             y: 8
         },
         {
+            direction: enum_directions.UP,
             x: 10,
             y: 9
         },
         {
+            direction: enum_directions.UP,
             x: 10,
             y: 10
         }
@@ -181,7 +197,7 @@ const default_food = {
     position: {
         x: 0,
         y: 0
-    }       
+    }
 };
 
 // const default_effect = {
@@ -209,6 +225,18 @@ const effect_POISON_BITE = {
     activeRounds: 4
 }
 
+const check_elementElementCollision = (element_1, element_2) => {
+    let elem_1 = {
+        x: element_1.x,
+        y: element_1.y
+    };
+    let elem_2 = {
+        x: element_2.x,
+        y: element_2.y
+    };
+    return JSON.stringify(elem_1) == JSON.stringify(elem_2);
+};
+
 const check_snakeWallCollision = (snake) => {
     if (
         snake.body[0].x < 0 ||
@@ -216,18 +244,18 @@ const check_snakeWallCollision = (snake) => {
         snake.body[0].y < 0 ||
         snake.body[0].y >= fieldSize_y
     ) {
-        snake.alive = false;        
+        snake.alive = false;
         return true;
     }
     else {
-        return false
+        return false;
     }
 };
 
 const check_snakeOwnBodyCollision = (snake) => {
-    for(let i = 0; i < snake.body.length; i++){
-        if(JSON.stringify(snake.body[0]) == JSON.stringify(snake.body[i]) && i > 0){
-            snake.alive = false;            
+    for (let i = 0; i < snake.body.length; i++) {
+        if (check_elementElementCollision(snake.body[0], snake.body[i]) && i > 0) {
+            snake.alive = false;
             return true;
         }
     }
@@ -237,10 +265,10 @@ const check_snakeOwnBodyCollision = (snake) => {
 const check_snakeSnakeCollision = (snake, snakes) => {
     let collisionHappened = false;
     snakes.map(otherSnake => {
-        if(otherSnake.user_name != snake.user_name && otherSnake.alive){            
+        if (otherSnake.user_name != snake.user_name && otherSnake.alive) {
             otherSnake.body.map(element => {
-                if(JSON.stringify(snake.body[0]) == JSON.stringify(element)){
-                    snake.alive = false;                    
+                if (check_elementElementCollision(snake.body[0], element)) {
+                    snake.alive = false;
                     collisionHappened = true;
                 }
             });
@@ -252,11 +280,11 @@ const check_snakeSnakeCollision = (snake, snakes) => {
 const check_snakeCollisions = (snakes) => {
     let collisionHappened = false;
     snakes.map(snake => {
-        if(snake.alive){
+        if (snake.alive) {
             collisionHappened = check_snakeWallCollision(snake);
             collisionHappened = check_snakeOwnBodyCollision(snake);
             collisionHappened = check_snakeSnakeCollision(snake, snakes);
-        }        
+        }
     });
     // snakes.map(snake => {
     //     if(snake.alive){
@@ -266,38 +294,38 @@ const check_snakeCollisions = (snakes) => {
     return collisionHappened;
 };
 
-const create_foodElement = (snakes, food) => {    
+const create_foodElement = (snakes, food) => {
     let collisionHappened = true;
     let newFoodPos = null;
     let newFood = JSON.parse(JSON.stringify(default_food));
 
-    while(collisionHappened){
+    while (collisionHappened) {
         newFoodPos = {
             x: Math.floor(Math.random() * fieldSize_x),
             y: Math.floor(Math.random() * fieldSize_y)
         };
         collisionHappened = false;
         //check for food snake collision
-        for(let snake_index = 0; snake_index < snakes.length; snake_index++){
-            for(let bodyElement_index = 0; bodyElement_index < snakes[snake_index].body.length; bodyElement_index++){
-                if(JSON.stringify(snakes[snake_index].body[bodyElement_index]) == JSON.stringify(newFoodPos)){
+        for (let snake_index = 0; snake_index < snakes.length; snake_index++) {
+            for (let bodyElement_index = 0; bodyElement_index < snakes[snake_index].body.length; bodyElement_index++) {
+                if (check_elementElementCollision(snakes[snake_index].body[bodyElement_index], newFoodPos)) {
                     collisionHappened = true;
                 }
-                if(collisionHappened){
+                if (collisionHappened) {
                     break;
                 }
             }
-            if(collisionHappened){
+            if (collisionHappened) {
                 break;
             }
         }
         //check for food food collision
-        if(collisionHappened == false){
+        if (collisionHappened == false) {
             for (let food_index = 0; food_index < food.length; food_index++) {
-                if(JSON.stringify(food[food_index].position) == JSON.stringify(newFoodPos)){
+                if (check_elementElementCollision(food[food_index].position, newFoodPos)) {
                     collisionHappened = true;
                 }
-                if(collisionHappened){
+                if (collisionHappened) {
                     break;
                 }
             }
@@ -310,50 +338,50 @@ const create_foodElement = (snakes, food) => {
 };
 
 const move_snake = (snake) => {
-    if (snake.direction == null && snake.last_direction != null){
-        snake.direction = snake.last_direction;
+    if (snake.direction == null) {
+        snake.direction = snake.body[0].direction;
     }
 
-    if (snake.direction == enum_directions.UP  && snake.last_direction == enum_directions.DOWN ||
-        snake.direction == enum_directions.DOWN  && snake.last_direction == enum_directions.UP ||
-        snake.direction == enum_directions.LEFT  && snake.last_direction == enum_directions.RIGHT ||
-        snake.direction == enum_directions.RIGHT  && snake.last_direction == enum_directions.LEFT){
-            snake.direction = snake.last_direction;
-        }
-    
+    if (snake.direction == enum_directions.UP && snake.body[0].direction == enum_directions.DOWN ||
+        snake.direction == enum_directions.DOWN && snake.body[0].direction == enum_directions.UP ||
+        snake.direction == enum_directions.LEFT && snake.body[0].direction == enum_directions.RIGHT ||
+        snake.direction == enum_directions.RIGHT && snake.body[0].direction == enum_directions.LEFT) {
+        snake.direction = snake.body[0].direction;
+    }
+
     let newBodyElement = {
-        "x": snake.body[0].x,
-        "y": snake.body[0].y
+        direction: snake.direction,
+        x: snake.body[0].x,
+        y: snake.body[0].y
     };
 
-    for (i = 0; i < snake.speed; i++){
-        if(snake.direction == enum_directions.UP){
+    for (i = 0; i < snake.speed; i++) {
+        if (snake.direction == enum_directions.UP) {
             --newBodyElement.y;
         }
-        else if(snake.direction == enum_directions.DOWN){
+        else if (snake.direction == enum_directions.DOWN) {
             ++newBodyElement.y;
         }
-        else if(snake.direction == enum_directions.LEFT){
+        else if (snake.direction == enum_directions.LEFT) {
             --newBodyElement.x;
         }
-        else if(snake.direction == enum_directions.RIGHT){
+        else if (snake.direction == enum_directions.RIGHT) {
             ++newBodyElement.x;
         }
     }
 
     snake.body.unshift(newBodyElement);
-    snake.last_direction = snake.direction;
     snake.direction = null
 
-    if(snake.grow < 0){
+    if (snake.grow < 0) {
         snake.grow = 0;
     }
-    if(snake.grow == 0){
-        for (i = 0; i < snake.speed; i++){
+    if (snake.grow == 0) {
+        for (i = 0; i < snake.speed; i++) {
             snake.body.pop();
         }
     }
-    else{
+    else {
         --snake.grow;
     }
 
@@ -375,21 +403,21 @@ const check_snakeFoodEaten = (snakes, food) => {
     let foodEaten = false;
     snakes.map(snake => {
         for (let food_index = 0; food_index < food.length; food_index++) {
-            if(JSON.stringify(snake.body[0]) == JSON.stringify(food[food_index].position)){                
-                if(food[food_index].type == enum_foodType.SINGLE_GROWTH){
-                    snake.effects.push(JSON.parse(JSON.stringify(effect_SINGLE_GROWTH)));                    
+            if (check_elementElementCollision(snake.body[0], food[food_index].position)) {
+                if (food[food_index].type == enum_foodType.SINGLE_GROWTH) {
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_SINGLE_GROWTH)));
                 }
-                else if(food[food_index].type == enum_foodType.DOUBLE_GROWTH){
-                    snake.effects.push(JSON.parse(JSON.stringify(effect_DOUBLE_GROWTH)));                    
+                else if (food[food_index].type == enum_foodType.DOUBLE_GROWTH) {
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_DOUBLE_GROWTH)));
                 }
-                else if(food[food_index].type == enum_foodType.DOUBLE_SPEED){
-                    snake.effects.push(JSON.parse(JSON.stringify(effect_DOUBLE_SPEED)));                    
+                else if (food[food_index].type == enum_foodType.DOUBLE_SPEED) {
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_DOUBLE_SPEED)));
                 }
-                else if(food[food_index].type == enum_foodType.POISON_BITE){
-                    snake.effects.push(JSON.parse(JSON.stringify(effect_POISON_BITE)));                    
+                else if (food[food_index].type == enum_foodType.POISON_BITE) {
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_POISON_BITE)));
                 }
-                else{
-                    snake.effects.push(JSON.parse(JSON.stringify(effect_SINGLE_GROWTH)));                    
+                else {
+                    snake.effects.push(JSON.parse(JSON.stringify(effect_SINGLE_GROWTH)));
                     console.log(`food.type: ${food[food_index].type} -> NOT IMPLEMENTED: Fallback to SINGLE_GROWTH.`);
                 }
                 food.splice(food_index, 1);
@@ -403,25 +431,25 @@ const check_snakeFoodEaten = (snakes, food) => {
 const activate_effects = (snakes) => {
     //TODO: implement activate_effects function
     snakes.map(snake => {
-        if(snake.alive){
+        if (snake.alive) {
             for (let effect_index = 0; effect_index < snake.effects.length; effect_index++) {
                 let effect = snake.effects[effect_index];
 
-                if(effect.type == enum_foodType.SINGLE_GROWTH){
-                    snake.grow++;                
+                if (effect.type == enum_foodType.SINGLE_GROWTH) {
+                    snake.grow++;
                 }
-                else if(effect.type == enum_foodType.DOUBLE_GROWTH){
-                    snake.grow += 2;                
+                else if (effect.type == enum_foodType.DOUBLE_GROWTH) {
+                    snake.grow += 2;
                 }
-                else if(effect.type == enum_foodType.DOUBLE_SPEED){
+                else if (effect.type == enum_foodType.DOUBLE_SPEED) {
                     //NOT IMPLEMENTED
                 }
-                else if(effect.type == enum_foodType.POISON_BITE){
+                else if (effect.type == enum_foodType.POISON_BITE) {
                     //NOT IMPLEMENTED
                 }
 
                 effect.activeRounds--;
-                if(effect.activeRounds == 0){
+                if (effect.activeRounds == 0) {
                     snake.effects.splice(effect_index, 1);
                 }
             }
@@ -439,7 +467,7 @@ const game_loop = (snakes, food) => {
 
     //draw snakes
     snakes.map(snake => {
-        if(snake.alive){
+        if (snake.alive) {
             drawSnake(snake);
         }
     });
@@ -454,20 +482,20 @@ const game_loop = (snakes, food) => {
 
     //move snakes
     snakes.map(snake => {
-        if(snake.alive){
+        if (snake.alive) {
             move_snake(snake);
         }
     });
-    
+
     //check snakes collisions
-    if(check_snakeCollisions(snakes)){
+    if (check_snakeCollisions(snakes)) {
         console.log("collision happend!")
     }
 
     //check food eaten
     check_snakeFoodEaten(snakes, food);
 
-    if(food.length < 1){
+    if (food.length < 1) {
         food.push(create_foodElement(snakes, food));
     }
 
@@ -475,10 +503,10 @@ const game_loop = (snakes, food) => {
     // move_snake(snake1);
 };
 
-const new_game = () => {    
+const new_game = () => {
     let snakes = [
         JSON.parse(JSON.stringify(default_snake)),
-        JSON.parse(JSON.stringify(default_snake2)),
+        // JSON.parse(JSON.stringify(default_snake2)),
         // JSON.parse(JSON.stringify(default_snake3))
     ];
     let food = [];
@@ -490,7 +518,8 @@ const new_game = () => {
     });
 
     // snake1 = JSON.parse(JSON.stringify(default_snake));
-    setInterval(function(){ game_loop(snakes, food); }, 200);
+    setInterval(() => { pollGamepads(snakes) }, 20);
+    setInterval(() => { game_loop(snakes, food); }, 200);
 };
 
 new_game();
