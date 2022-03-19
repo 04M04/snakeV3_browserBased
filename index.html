@@ -5,16 +5,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/table.css">
     <title>SnakeVS
     </title>
 </head>
 
 <body>
-    <div class="score" id="score">0</div>
+    <!-- <div class="score" id="score">0</div> -->
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Pos</th>
+                    <th>Color</th>
+                    <th>User</th>
+                    <th>Points</th>
+                    <th>Item_1</th>
+                    <th>Item_2</th>
+                </tr>
+            </thead>
+            <tbody id="playerTabel">
+                <tr>
+                    <td>1</td>
+                    <td>RED</td>
+                    <td>DEMO_USER</td>
+                    <td>Points</td>
+                    <td>Item</td>
+                    <td>Item</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <div id="gamepadInfo"></div>
     <canvas id="canvas" height="600px" width="600px"></canvas>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
+    <script src="js/tabel.js"></script>
     <script src="js/controller.js"></script>
     <script src="js/gameUi.js"></script>
     <script src="js/game.js"></script>

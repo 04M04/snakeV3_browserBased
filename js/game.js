@@ -499,6 +499,8 @@ const game_loop = (snakes, food) => {
         food.push(create_foodElement(snakes, food));
     }
 
+    update_playerTable(snakes);
+
     // drawSnake(snake1);
     // move_snake(snake1);
 };
@@ -506,7 +508,7 @@ const game_loop = (snakes, food) => {
 const new_game = () => {
     let snakes = [
         JSON.parse(JSON.stringify(default_snake)),
-        // JSON.parse(JSON.stringify(default_snake2)),
+        JSON.parse(JSON.stringify(default_snake2)),
         // JSON.parse(JSON.stringify(default_snake3))
     ];
     let food = [];
@@ -516,6 +518,8 @@ const new_game = () => {
         console.log(`keyCode: ${event.key}`);
         changeDirection(event.key, snakes);
     });
+
+    update_playerTable(snakes);
 
     // snake1 = JSON.parse(JSON.stringify(default_snake));
     setInterval(() => { pollGamepads(snakes) }, 20);
