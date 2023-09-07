@@ -1,7 +1,7 @@
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 
-var cellCount = 20
+var cellCount = 40
 var cellCount_x = cellCount;
 var cellCount_y = cellCount;
 

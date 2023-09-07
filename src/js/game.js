@@ -1,4 +1,4 @@
-const fieldSize = 20;
+const fieldSize = cellCount; //TODO: change everything to fieldSize in game.js and gameUi.js
 const fieldSize_x = fieldSize;
 const fieldSize_y = fieldSize;
 
@@ -499,7 +499,7 @@ const game_loop = (snakes, food) => {
         food.push(create_foodElement(snakes, food));
     }
 
-    update_playerTable(snakes);
+    update_playerScore(snakes);
 
     // drawSnake(snake1);
     // move_snake(snake1);
@@ -519,7 +519,7 @@ const new_game = () => {
         changeDirection(event.key, snakes);
     });
 
-    update_playerTable(snakes);
+    update_playerScore(snakes);
 
     // snake1 = JSON.parse(JSON.stringify(default_snake));
     setInterval(() => { pollGamepads(snakes) }, 20);
