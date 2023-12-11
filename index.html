@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="src/css/style.css">
-    <!-- <link rel="stylesheet" href="src/css/table.css"> -->
-    <link href="/dist/output.css" rel="stylesheet">
+    <link rel="stylesheet" href="src/css/table.css">
+    <!-- <link href="/dist/output.css" rel="stylesheet"> -->
     <title>SnakeVS
     </title>
 </head>
 
 <body>
     <!-- <div class="score" id="score">0</div> -->
-    <div class="container">
+    <header>
         <table>
             <thead>
                 <tr>
@@ -36,16 +36,22 @@
                 </tr>
             </tbody>
         </table>
-    </div>
-    <div id="gamepadInfo"></div>
-    <canvas id="canvas" height="400px" width="400px"></canvas>
-    
+    </header>
+    <aside>
+        <div id="gamepadInfo"></div>
+    </aside>
+    <main><canvas id="canvas" height="600px" width="600px"></canvas>
+    </main>
+    <footer>
+        Made by @04M04
+    </footer>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uuid/8.1.0/uuidv4.min.js"></script>
     <script src="src/js/playerScore.js"></script>
     <script src="src/js/controller.js"></script>
     <script src="src/js/gameUi.js"></script>
     <script src="src/js/game.js"></script>
-    
+
 </body>
 
 </html>
